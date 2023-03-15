@@ -1,25 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import { CartaProyecto1Collection, NavBar } from './ui-components';
+import { Link, Flex, withAuthenticator } from '@aws-amplify/ui-react';
+import {Root,Postulaciones,Aceptarproyectos} from "./pages/index";
+import {
+  BrowserRouter as Router,
+  Link as ReactRouterLink,
+  Routes,
+  Route,
+ 
+ } from 'react-router-dom';
 
-function App() {
+function App({user}) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  <Router>
+      <Routes>
+        <Route path="/proyectos" element={<Aceptarproyectos />} />
+        <Route path="/postulaciones" element={<Postulaciones />} />
+        <Route path="/" element={<Root/>} />
+      </Routes>
+  </Router>
   );
 }
 
-export default App;
+export default withAuthenticator(App);

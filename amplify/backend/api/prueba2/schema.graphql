@@ -1,0 +1,60 @@
+type Postulacion @model @auth(rules: [{allow: public}, {allow: groups, groups: ["coordinador"], operations: [read, create, update, delete]}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  description: String!
+  status: Boolean!
+  field: Field!
+  profesorID: ID! @index(name: "byProfesor")
+  coordinadorID: ID! @index(name: "byCoordinador")
+  estudianteID: ID! @index(name: "byEstudiante")
+}
+
+enum Field {
+  MECATRONICA
+  SISTEMAS
+  BIOMEDICA
+}
+
+type Reporte @model @auth(rules: [{allow: public}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  grade: Float
+  Profesor: Profesor @hasOne
+  Estudiantes: [Estudiante] @hasMany(indexName: "byReporte", fields: ["id"])
+}
+
+type Proyecto @model @auth(rules: [{allow: public, operations: [create, read, update]}, {allow: groups, groups: ["coordinador"], operations: [read, create, update, delete]}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  description: String!
+  status: Boolean!
+  field: Field!
+  Profesor: Profesor @hasOne
+  Estudiantes: [Estudiante] @hasMany(indexName: "byProyecto", fields: ["id"])
+}
+
+type Profesor @model @auth(rules: [{allow: public}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  field: Field!
+  mail: String
+  Postulacions: [Postulacion] @hasMany(indexName: "byProfesor", fields: ["id"])
+}
+
+type Estudiante @model @auth(rules: [{allow: public}, {allow: owner}]) {
+  id: ID!
+  name: String!
+  field: Field!
+  mail: String
+  proyectoID: ID @index(name: "byProyecto")
+  Postulacions: [Postulacion] @hasMany(indexName: "byEstudiante", fields: ["id"])
+  reporteID: ID @index(name: "byReporte")
+}
+
+type Coordinador @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  mail: String!
+  Postulacions: [Postulacion] @hasMany(indexName: "byCoordinador", fields: ["id"])
+}
+ 
